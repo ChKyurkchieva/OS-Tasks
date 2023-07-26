@@ -1,0 +1,1 @@
+find -type d | cut -c 3-

@@ -1,0 +1,1 @@
+cat /etc/services | head -n5
