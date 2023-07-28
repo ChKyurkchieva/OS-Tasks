@@ -1,0 +1,1 @@
+stat -c '%a %n' * | grep '777' | cut -d ' ' -f 2
