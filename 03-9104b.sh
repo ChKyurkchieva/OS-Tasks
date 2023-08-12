@@ -1,0 +1,1 @@
+find ~/songs | cut -d- -f2| rev| cut -d"(" -f1|rev|cut -d")" -f1| tr "," " " | grep "^[A-Z]"|sort -n|uniq|sed "s/ \+/ /g" |  awk "{ last = $NF; $NF = " "; print last, $0 }" | sort -k1n | awk "{$(NF+1)=$1; $1=""; print $0}" | sed "s/^ //" 
