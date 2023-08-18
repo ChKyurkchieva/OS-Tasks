@@ -1,0 +1,32 @@
+#!/bin/bash
+
+a=0
+b=4096
+
+if [[ "$#" -ne 0 ]]; then
+	echo "Error: This script does NOT expect arguments."
+	exit 1
+fi
+
+target=$(( (RANDOM % (b-a+1)) + a ))
+
+attempts=0
+
+while true; do
+	read -p "Guess? " guess
+if [[ $guess =~ ^[0-9]+$ ]]; then
+
+		attempts=$((attempts+1))
+
+		if [[ "$guess" -eq "$target" ]]; then
+			echo "RIGHT! Guessed $target in $attempts tries!"
+			exit 0
+		elif [ "$guess" -lt "$target" ]; then
+			echo "...bigger!"
+		elif [ "$guess" -gt "$target" ]; then
+			echo "...smaller!"
+		fi
+	else
+		echo "Please, dude! Input a non-negative number."
+fi
+done
