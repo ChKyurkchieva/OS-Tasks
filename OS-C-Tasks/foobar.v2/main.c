@@ -39,34 +39,35 @@ int main(int argc, char *argv[])
 
 	pid_t firstChildPID = fork();
 	if (firstChildPID < 0)
-	{
 		err(1, "system call fork() was NOT successful\n");
-	}
 
-	pid_t secondChildPID = fork();
-	if (secondChildPID < 0)
+	if (firstChildPID>0)
 	{
-		err(1, "system call fork() was NOT successful\n");
-	}
-
-	if (firstChildPID == 0)
-	{
-		if (write(fileDescriptor, "foo", sizeof("foo"))!= sizeof("foo"))
+		//parent
+		wait(&status);
+		if (WIFEXITED(status))
 		{
-			err(1, "First child writing was NOT succsessful\n");
+
+			pid_t secondChildPID = fork();
+			if (secondChildPID < 0)
+				err(1, "system call fork() was NOT successful\n");
+
+			if(secondChildPID == 0)
+			{	
+				if (write(fileDescriptor, "bar", sizeof("bar"))!= sizeof("bar"))
+					err(1, "Second child writing was NOT succsessful\n");
+	
+			}	
 		}
+	}
+	else
+	{
+		
+		if (write(fileDescriptor, "foo", sizeof("foo"))!= sizeof("foo"))
+			err(1, "First child writing was NOT succsessful\n");
 	}
 	
-	if (secondChildPID == 0)
-	{
-		waitpid(firstChildPID, &status);	
-		if (write(fileDescriptor, "bar", sizeof("bar"))!= sizeof("bar"))
-		{
-			err(1, "Second child writing was NOT succsessful\n");
-		}
-	}
-
-
+	close(fileDescriptor);
 
 	return 0;
 }
