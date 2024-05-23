@@ -2,14 +2,6 @@
 #include<unistd.h>
 #include<stdbool.h>
 #include<stdio.h>
-void newPipe(int in, int out)
-{
-	int pipeFD[2] = {in, out};
-	if(pipe(pipeFD) == -1)
-	{
-		err(1, "\n");
-	}
-}
 
 int main(int argc, char* argv[]) {
 
@@ -20,12 +12,14 @@ int main(int argc, char* argv[]) {
 	int firstPipe[2];
 	if(pipe(firstPipe) == -1)
 	{
-		err(1, "\n");
+		err(1, "first call of pipe() was NOT successful\n");
 	}
 
 	int secondPipe[2];
-	pipe(secondPipe);
-
+	if(pipe(secondPipe) == -1)
+	{
+		err(1, "second call of pipe() was NOT successful\n");
+	}
 	pid_t first_child = fork();
 	if(first_child == -1)
 	{
@@ -39,7 +33,7 @@ int main(int argc, char* argv[]) {
 		second_child = fork();
 		if(second_child == -1)
 		{
-			err(1,"\n");
+			err(1,"second call of fork() was NOT successful\n");
 		}
 	}
 
@@ -66,7 +60,6 @@ int main(int argc, char* argv[]) {
 		close(secondPipe[1]);
 		close(firstPipe[1]);
 		//execlp("ls", "ls", (char*)NULL);
-		//dup2(firstPipe[0], 1);
 		char buffer[1];
 		while (read(firstPipe[0], buffer, sizeof(char))>0)
 		{
@@ -82,7 +75,6 @@ int main(int argc, char* argv[]) {
 		bool who = 0; //first child =0, second = 1
 		char buffer[1];
 		char c = '\n';
-		//char r = '\r';
 		while(read(0, buffer, sizeof(char))>0)
 		{
 			if(!who)
