@@ -13,19 +13,23 @@ int main(int argc, char* argv[])
 		err(1,"Usage: %s", argv[0]);
 	}
 	char fileName[2048];
-    snprintf(fileName,2048,"%d", (int)time(NULL));
+    snprintf(fileName,2048,"%d", getpid());
+	printf(fileName);
+	printf(" \n");
 	int fileDescriptor = open(fileName, O_WRONLY | O_CREAT | O_TRUNC, 0666);
 	if(fileDescriptor == -1)
 	{
 		err(1, "error opening file");
 	}
-	char buffer[4096];
-	int readBuffer=0;
-	if((readBuffer = read(0, buffer, sizeof(buffer)))<0)
+	
+	char buffer[1];
+	int when = 0;
+	while(read(0, buffer, sizeof(char))==1 && when < 10)
 	{
-		err(1, "error while reading");
+		write(fileDescriptor, buffer, 1);
+		when=when+1;
 	}
-	write(fileDescriptor, buffer, readBuffer);
+	
 	close(fileDescriptor);
 	return 0;
 }
