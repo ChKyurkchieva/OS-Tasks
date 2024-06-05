@@ -1,4 +1,42 @@
 #include <err.h>
+#include <unistd.h>
+#include <sys/wait.h>
+
+pid_t myFork(void)
+{
+	pid_t pid = fork();
+	if(pid == -1)
+	{
+		err(1, "Couldn't fork()\n");
+	}
+	return pid;
+}
+
+void myPipe(int p[2])
+{
+	if(pipe(p) < 0)
+	{
+		err(1, "Couldn't pipe()\n");
+	}
+}
+
+void findExecution(void)
+{
+	if(execlp("find", "find", argv[1], "type - f", "-not", "-name","*.hash") == -1)
+	{
+		err(1, "exec find was NOT successful\n");
+	}
+}
+
+void readLine(char* from, int sizeFrom)
+{
+	char c;
+	char newLine = '\n';
+	int read;
+	//TODO READING LINE FROM FILE DECRIPTOR
+	//while( (read = read(fileDecri 
+
+}
 
 int main(int argc, char* argv[]) {
 	
@@ -8,36 +46,24 @@ int main(int argc, char* argv[]) {
 	}
 
 	int status;
-	//Create file using PID of procces for name and open its file descriptors
-	pid_t findPID = fork();
 
-	if(findPID == -1)
-	{
-		err(1, "fork() was NOT successful\n");
-	}
+	int pipeFind[2];
+	myPipe(pipeFind);
+	close(pipeFind[0]);
+
+	//Create file using PID of procces for name and open its file descriptors
+	pid_t findPID = myFork();
+	//create pipe
 
 	if(findPID == 0)
 	{
 		//child
-		if(execlp("find", "find", argv[1], "type - f") == -1)
-		{
-			err(1, "execlp() was NOT successful\n");
-		}
+		close(pipeFind[1]);
+		dup2(0, pipeFind[0]);
+		close(0);
+		findExecution();
 	}
-	if(wait(&status) == -1)
-	{
-		err(1, "wait() was NOT successful\n");
-	}
+	 //parent
 
-	if( !WIFEXITED )
-	{
-		err(1, "child process is NOT  exited\n");
-	}
-
-	if(WEXITSTATUS(&status) != 0)
-	{
-		err(1, "child process is NOT exited successfuly\n");
-	}
-	
 	return 0;
 }
