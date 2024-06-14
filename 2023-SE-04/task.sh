@@ -14,7 +14,7 @@ hash_sums=$(mktemp)
 files=$(find "$1" -type f)
 for file in "$files"
 do
-	md5sum "$file" >> "$hash_sums"
+	md5sum $file >> "$hash_sums"
 done
 
 uniq_sums=$(mktemp)
