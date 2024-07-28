@@ -1,5 +1,7 @@
 #!/bin/bash
-myDirectories=$(find ~ -type d)
-while read -p directory
+find ~ -type d | while read -r directory
 do 
-    chmod 
+    chmod 755 "$directory"
+done
+
+#find ~ -type d -exec chmod 755 {} \;
