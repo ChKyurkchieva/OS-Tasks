@@ -42,12 +42,12 @@ function averageTime()
         done
 
     if [[ $lines -gt 0 ]]; then
-                averageSeconds=$(echo "scale=9; $sumSeconds / $lines" | bc)
-                echo "$averageSeconds"
-        else
+        averageSeconds=$(echo "scale=9; $sumSeconds / $lines" | bc)
+        echo "$averageSeconds"
+    else
         echo "Number of lines must be greater than zero."
         exit 1
-        fi
+    fi
 }
 
 function killProcceses()

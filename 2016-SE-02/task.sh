@@ -14,7 +14,7 @@ user=$(whoami)
 
 if [[ $user == "root" ]];then
     tempFile=$(mktemp)
-        summedRSS=$(mktemp)
+    summedRSS=$(mktemp)
 
     ps -eo uid=,pid=,rss= | sort -n -k1,1 | tr -s ' ' | rev | cut -d' ' -f1,2,3 | rev > $tempFile
     awk '{sum[$1] += $3} END {for (i in sum) print i, sum[i]}' $tempFile >> $summedRSS
