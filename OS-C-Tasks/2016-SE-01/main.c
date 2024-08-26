@@ -1,3 +1,4 @@
+#define _GNU_SOURCE
 #include <err.h>
 #include <unistd.h>
 #include <stdbool.h>
@@ -29,7 +30,7 @@ void closeFileDescriptor(int fileDescriptor)
 
 int compareBytes(const void* a, const void* b)
 {
-    return (*(uint8_t*)a - *(uint8_t*)b);
+    return ( *(uint8_t*)(uintptr_t)a - *(uint8_t*)(uintptr_t)b );
 }
 
 void insertByteInFile(int fileDescriptorRead, int fileDescriptorWrite, uint8_t byte)
