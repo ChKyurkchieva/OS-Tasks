@@ -36,7 +36,7 @@ int compareBytes(const void* a, const void* b)
 void insertByteInFile(int fileDescriptorRead, int fileDescriptorWrite, uint8_t byte)
 {
     uint8_t lastReadByte;
-    off_t offset = 0;
+    int offset = 0;
 
     if (read(fileDescriptorRead, &lastReadByte, sizeof(lastReadByte)) < 0)
     {
@@ -51,8 +51,9 @@ void insertByteInFile(int fileDescriptorRead, int fileDescriptorWrite, uint8_t b
             err(1, "Error occured while reading single byte from file");
         }
     }
-    lseek(fileDescriptorWrite, offset, SEEK_CUR);
+    lseek(fileDescriptorWrite, SEEK_SET, offset);
     write(fileDescriptorWrite, &byte, sizeof(byte));
+    lseek(fileDescriptorRead, SEEK_SET, 0);
 }
 
 int main(int argc, const char* argv[])
@@ -65,7 +66,7 @@ int main(int argc, const char* argv[])
     int fileDescriptor = openFileDescriptor(argv[1], O_RDONLY);
 
     uint8_t buffer[MAX_BUFFER_SIZE];
-    char tempFileName[] = "/tmp/tmpXXXXXX";
+    char tempFileName[] = "/home/students/s45523/OS-Tasks/OS-C-Tasks/test/1";
     int tempFDRead = openFileDescriptor(tempFileName, O_RDONLY);
     int tempFDWrite = openFileDescriptor(tempFileName, O_WRONLY);
     int bytesRead;
