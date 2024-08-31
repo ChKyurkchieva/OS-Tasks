@@ -44,7 +44,7 @@ void execute(const char* command)
 {
         char argument1[5];
         char argument2[5];
-        while(!stop)
+        while(true)
         {
                 ssize_t readBytes1 = readData(0, argument1, 4);
                 if(readBytes1 == 0)
@@ -86,22 +86,22 @@ void execute(const char* command)
 
 int main(int argc, const char* argv[])
 {
-        if(argc != 1 && argc != 2)
-        {
-                err(1, "Usage: %s <command>", argv[0]);
-        }
+    if(argc != 1 && argc != 2)
+    {
+         err(1, "Usage: %s <command>", argv[0]);
+    }
 
-        if(argc == 1)
+    if(argc == 1)
+    {
+        execute("echo");
+    }
+    else
+    {
+        if(strlen(argv[1]) > 4)
         {
-                execute("echo");
+            err(1, "Error: Command name too long");
         }
-        else
-        {
-                if(strlen(argv[1]) > 4)
-                {
-                        err(1, "Error: Command name too long");
-                }
-                execute(argv[1]);
-        }
+        execute(argv[1]);
+    }
         return 0;
 }
